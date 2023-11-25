@@ -23,6 +23,7 @@ def test_get_config_schema():
     assert "allowed_origins" in schema
     assert "csrf_protection" in schema
     assert "default_app" in schema
+    assert "jsonrpc_event" in schema
 
 
 def test_default_config_is_valid():

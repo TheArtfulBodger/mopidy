@@ -82,15 +82,36 @@ look at the ``core.describe`` response can be helpful.
 
 .. _json-events:
 
+Events & Notifications
+======================
+
+The events maps directly to the :class:`mopidy.core.CoreListener` API. Refer to
+the :class:`~mopidy.core.CoreListener` method names is the available event
+types. The :class:`~mopidy.core.CoreListener` method's keyword arguments are
+all included as extra fields on the event objects.
+
 Event messages
-==============
+--------------
+
+(```http/jsonrpc_events`` is false)
 
 Event objects will always have a key named ``event`` whose value is the event
 type. Depending on the event type, the event may include additional fields for
-related data. The events maps directly to the :class:`mopidy.core.CoreListener`
-API. Refer to the :class:`~mopidy.core.CoreListener` method names is the
-available event types. The :class:`~mopidy.core.CoreListener` method's keyword
-arguments are all included as extra fields on the event objects. Example event
-message::
+related data. Example event message::
 
     {"event": "track_playback_started", "track": {...}}
+
+JSON-RPC Notifications
+----------------------
+
+(```http/jsonrpc_events`` is true)
+
+Event objects are performed as JSON-RPC notfications from the server to the
+client. The ``method`` field is the event's name, any additional fields are in
+the ``params`` section.
+
+    {
+      "jsonrpc": "2.0",
+      "method": "track_playback_started",
+      "params": {"track": {...}}
+    }

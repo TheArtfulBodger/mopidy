@@ -117,3 +117,8 @@ See :ref:`config` for general help on configuring Mopidy.
     default list of web apps. The value should be the name used by the
     extension when it registers its ``http:static`` or ``http:app`` extension
     points. By convention, this is the the extension's ``ext_name``.
+
+.. confval:: http/jsonrpc_events
+
+    Whether events to be sent as JSON-RPC notifications to clients. See the
+    :ref:`API section <json-events>` for more information.

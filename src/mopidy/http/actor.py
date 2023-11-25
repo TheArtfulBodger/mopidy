@@ -58,6 +58,7 @@ class HttpFrontend(pykka.ThreadingActor, CoreListener):
         self.zeroconf_name = config["http"]["zeroconf"]
         self.zeroconf_http = None
         self.zeroconf_mopidy_http = None
+        self.jsonrpc_events = config["http"]["jsonrpc_events"]
 
     def on_start(self) -> None:
         logger.info("HTTP server running at [%s]:%s", self.hostname, self.port)
@@ -85,12 +86,21 @@ class HttpFrontend(pykka.ThreadingActor, CoreListener):
 
     def on_event(self, name: str, **data: Any) -> None:
         assert self.server.io_loop
-        on_event(name, self.server.io_loop, **data)
+        if self.jsonrpc_events:
+            on_event_jsonrpc(name, self.server.io_loop, **data)
+        else:
+            on_event_original(name, self.server.io_loop, **data)
 
 
-def on_event(name: str, io_loop: tornado.ioloop.IOLoop, **data: Any) -> None:
+def on_event_original(name: str, io_loop: tornado.ioloop.IOLoop, **data: Any) -> None:
     event = data
     event["event"] = name
+    message = json.dumps(event, cls=models.ModelJSONEncoder)
+    handlers.WebSocketHandler.broadcast(message, io_loop)
+
+
+def on_event_jsonrpc(name: str, io_loop: tornado.ioloop.IOLoop, **data: Any) -> None:
+    event = {"jsonrpc": "2.0", "method": name, "params": data}
     message = json.dumps(event, cls=models.ModelJSONEncoder)
     handlers.WebSocketHandler.broadcast(message, io_loop)
 

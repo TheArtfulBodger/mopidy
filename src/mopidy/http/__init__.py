@@ -30,6 +30,7 @@ class Extension(ext.Extension):
         )
         schema["csrf_protection"] = config.Boolean(optional=True)
         schema["default_app"] = config.String(optional=True)
+        schema["jsonrpc_events"] = config.Boolean(optional=True)
         return schema
 
     def validate_environment(self) -> None:

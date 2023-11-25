@@ -23,6 +23,7 @@ class HttpConfig(TypedDict):
     allowed_origins: list[str]
     csrf_protection: bool | None
     default_app: str | None
+    jsonrpc_events: bool | None
 
 
 class HttpApp(TypedDict):
